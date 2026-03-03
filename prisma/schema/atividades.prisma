@@ -1,0 +1,33 @@
+// Entidade: Atividades
+// Representa as tarefas/atividades de cada projeto
+
+model atividades {
+  atividade_id         Int                    @id @default(autoincrement())
+  projeto_id           Int
+  nome_atividade       String                 @db.VarChar(100)
+  descr_atividade      String?
+  prioridade           String?                @default("normal") @db.VarChar(20)
+  data_prevista_inicio DateTime?              @default(dbgenerated("date_trunc('second'::text, CURRENT_TIMESTAMP)")) @db.Timestamp(6)
+  data_prevista_fim    DateTime?              @default(dbgenerated("date_trunc('second'::text, CURRENT_TIMESTAMP)")) @db.Timestamp(6)
+  status               String                 @default("Pendente") @db.VarChar(20)
+  colaborador_id       Int?
+  horas_previstas      Float?                 @default(0)
+  horas_gastas         Float?                 @default(0)
+
+  // Relacionamentos
+  colaboradores_atividades atividade_colaboradores[]
+  responsavel              colaboradores?            @relation(fields: [colaborador_id], references: [colaborador_id], onUpdate: NoAction, map: "fk_atividade_colaborador")
+  projetos                 projetos                  @relation(fields: [projeto_id], references: [projeto_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_atividade_projeto")
+  lancamentos_de_horas     lancamentos_de_horas[]
+}
+
+// Tabela de junção: Atividade <-> Colaboradores (N:M)
+model atividade_colaboradores {
+  atividade_id   Int
+  colaborador_id Int
+
+  atividades     atividades    @relation(fields: [atividade_id], references: [atividade_id], onDelete: Cascade)
+  colaboradores  colaboradores @relation(fields: [colaborador_id], references: [colaborador_id], onDelete: Cascade)
+
+  @@id([atividade_id, colaborador_id])
+}

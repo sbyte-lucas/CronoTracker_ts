@@ -1,0 +1,25 @@
+// Entidade: Lançamentos de Horas
+// Representa os registros de horas trabalhadas
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model lancamentos_de_horas {
+  lancamento_id    Int           @id @default(autoincrement())
+  colaborador_id   Int
+  projeto_id       Int
+  cliente_id       Int
+  atividade_id     Int
+  data_lancamento  DateTime      @default(dbgenerated("CURRENT_DATE")) @db.Date
+  hora_inicio      DateTime      @db.Time(6)
+  hora_fim         DateTime      @db.Time(6)
+  descricao        String?
+  status_aprovacao String        @default("pendente") @db.VarChar(20)
+  criado_em        DateTime?     @default(now()) @db.Timestamp(6)
+  duracao_total    Float?
+  tipo_lancamento  String        @default("manual") @db.VarChar(20)
+
+  // Relacionamentos
+  atividades       atividades    @relation(fields: [atividade_id], references: [atividade_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lancamento_atividade")
+  clientes         clientes      @relation(fields: [cliente_id], references: [cliente_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lancamento_cliente")
+  colaboradores    colaboradores @relation(fields: [colaborador_id], references: [colaborador_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lancamento_colaborador")
+  projetos         projetos      @relation(fields: [projeto_id], references: [projeto_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lancamento_projeto")
+}

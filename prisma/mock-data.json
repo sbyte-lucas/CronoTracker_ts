@@ -1,0 +1,159 @@
+{
+  "clientes": [
+    {
+      "nome_cliente": "Tech Solutions Ltda",
+      "nome_contato": "João Silva",
+      "cep": "01310100",
+      "endereco": "Av. Paulista, 1000",
+      "cidade": "São Paulo",
+      "estado": "SP",
+      "cnpj": "12345678000190",
+      "status": true
+    },
+    {
+      "nome_cliente": "Inovação Digital",
+      "nome_contato": "Maria Santos",
+      "cep": "30130100",
+      "endereco": "Rua da Bahia, 2000",
+      "cidade": "Belo Horizonte",
+      "estado": "MG",
+      "cnpj": "98765432000110",
+      "status": true
+    },
+    {
+      "nome_cliente": "Consultoria Global",
+      "nome_contato": "Carlos Mendes",
+      "cep": "50010932",
+      "endereco": "Av. Getúlio Vargas, 3000",
+      "cidade": "Recife",
+      "estado": "PE",
+      "cnpj": "55555555000150",
+      "status": true
+    }
+  ],
+  "colaboradores": [
+    {
+      "nome_colaborador": "Ana Paula Costa",
+      "cargo": "Desenvolvedora Sênior",
+      "email": "ana.costa@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "Bruno Ferreira",
+      "cargo": "Desenvolvedor Júnior",
+      "email": "bruno.ferreira@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "Camila Rocha",
+      "cargo": "Designer UI/UX",
+      "email": "camila.rocha@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "David Oliveira",
+      "cargo": "QA Engineer",
+      "email": "david.oliveira@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "Elisa Martins",
+      "cargo": "Analista de Sistemas",
+      "email": "elisa.martins@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "Felipe Alves",
+      "cargo": "DevOps Engineer",
+      "email": "felipe.alves@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "Gabriela Lima",
+      "cargo": "Product Manager",
+      "email": "gabriela.lima@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "Henrique Gomes",
+      "cargo": "Desenvolvedor Backend",
+      "email": "henrique.gomes@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "Isabela Souza",
+      "cargo": "Gerente de Projeto",
+      "email": "isabela.souza@empresa.com",
+      "status": true
+    },
+    {
+      "nome_colaborador": "João Pedro Silva",
+      "cargo": "Desenvolvedor Full Stack",
+      "email": "joao.silva@empresa.com",
+      "status": true
+    }
+  ],
+  "projetos": [
+    {
+      "nome_projeto": "Portal E-commerce",
+      "descricao": "Desenvolvimento de plataforma de e-commerce completa com integração de pagamento",
+      "status": "Em Progresso",
+      "horas_previstas": 500,
+      "cliente_id": 1
+    },
+    {
+      "nome_projeto": "APP Mobile Delivery",
+      "descricao": "Aplicativo mobile para serviço de delivery com rastreamento em tempo real",
+      "status": "Em Progresso",
+      "horas_previstas": 400,
+      "cliente_id": 1
+    },
+    {
+      "nome_projeto": "Sistema de Gestão Hospitalar",
+      "descricao": "ERP especializado para gerenciamento de hospitais e clínicas",
+      "status": "Orçando",
+      "horas_previstas": 800,
+      "cliente_id": 2
+    },
+    {
+      "nome_projeto": "Dashboard Analítico",
+      "descricao": "Dashboard com inteligência de dados e relatórios customizáveis",
+      "status": "Concluído",
+      "horas_previstas": 320,
+      "cliente_id": 2
+    },
+    {
+      "nome_projeto": "API REST Integradora",
+      "descricao": "API REST para integração de sistemas legados com plataforma cloud",
+      "status": "Em Progresso",
+      "horas_previstas": 280,
+      "cliente_id": 3
+    }
+  ],
+  "usuarios": [
+    {
+      "nome_usuario": "ana.costa",
+      "nome_completo": "Ana Paula Costa",
+      "email": "ana.costa@empresa.com",
+      "cargo": "Administrador",
+      "status": true,
+      "hash_senha": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/DiO"
+    },
+    {
+      "nome_usuario": "bruno.ferreira",
+      "nome_completo": "Bruno Ferreira",
+      "email": "bruno.ferreira@empresa.com",
+      "cargo": "Desenvolvedor",
+      "status": true,
+      "hash_senha": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/DiO"
+    },
+    {
+      "nome_usuario": "gabriela.lima",
+      "nome_completo": "Gabriela Lima",
+      "email": "gabriela.lima@empresa.com",
+      "cargo": "Gerenciador",
+      "status": true,
+      "hash_senha": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/DiO"
+    }
+  ]
+}

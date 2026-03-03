@@ -1,0 +1,13 @@
+// Entidade: Logs de Acesso
+// Representa os registros de ações dos usuários no sistema
+
+model logs_acesso {
+  id            Int       @id @default(autoincrement())
+  usuario_id    Int
+  evento        String    @db.VarChar(50)
+  tela_acessada String?   @db.VarChar(255)
+  data_hora     DateTime? @default(now()) @db.Timestamp(6)
+
+  // Relacionamentos
+  usuarios      usuarios  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+}

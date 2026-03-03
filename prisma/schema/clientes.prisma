@@ -1,0 +1,19 @@
+// Entidade: Clientes
+// Representa os clientes da empresa
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model clientes {
+  cliente_id           Int                    @id @default(autoincrement())
+  nome_cliente         String                 @db.VarChar(50)
+  nome_contato         String                 @db.VarChar(50)
+  cep                  String?                @db.VarChar(10)
+  endereco             String?                @db.VarChar(100)
+  cidade               String?                @db.VarChar(100)
+  estado               String?                @db.Char(2)
+  cnpj                 String?                @unique @db.VarChar(18)
+  status               Boolean?               @default(true)
+
+  // Relacionamentos
+  lancamentos_de_horas lancamentos_de_horas[]
+  projetos             projetos[]
+}

@@ -1,0 +1,32 @@
+// Entidade: Projetos
+// Representa os projetos vinculados aos clientes
+
+model projetos {
+  projeto_id            Int                     @id @default(autoincrement())
+  cliente_id            Int
+  nome_projeto          String                  @db.VarChar(100)
+  descricao             String
+  data_inicio           DateTime?               @default(now()) @db.Timestamp(6)
+  data_fim              DateTime?               @default(now()) @db.Timestamp(6)
+  status                String                  @default("Orçando") @db.VarChar(20)
+  horas_previstas       Int?                    @default(0)
+  horas_gastas          Float?                  @default(0)
+
+  // Relacionamentos
+  atividades            atividades[]
+  despesas              despesas[]
+  lancamentos_de_horas  lancamentos_de_horas[]
+  projeto_colaboradores projeto_colaboradores[]
+  clientes              clientes                @relation(fields: [cliente_id], references: [cliente_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_projeto_cliente")
+}
+
+// Tabela de junção: Projeto <-> Colaboradores (N:M)
+model projeto_colaboradores {
+  projeto_id     Int
+  colaborador_id Int
+
+  colaboradores  colaboradores @relation(fields: [colaborador_id], references: [colaborador_id], onDelete: Cascade, onUpdate: NoAction)
+  projetos       projetos      @relation(fields: [projeto_id], references: [projeto_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([projeto_id, colaborador_id])
+}

@@ -1,0 +1,20 @@
+// Entidade: Despesas
+// Representa as despesas vinculadas aos projetos
+
+model despesas {
+  despesa_id        Int           @id @default(autoincrement())
+  projeto_id        Int
+  colaborador_id    Int
+  tipo_despesa      String        @db.VarChar(50)
+  data_despesa      DateTime      @db.Date
+  valor             Float
+  descricao         String
+  anexo             String
+  status_aprovacao  String        @default("Pendente") @db.VarChar(30)
+  motivo_reprovacao String?
+  criado_em         DateTime      @default(now()) @db.Timestamp(6)
+
+  // Relacionamentos
+  colaborador       colaboradores @relation(fields: [colaborador_id], references: [colaborador_id], onDelete: NoAction)
+  projeto           projetos      @relation(fields: [projeto_id], references: [projeto_id], onDelete: Cascade)
+}

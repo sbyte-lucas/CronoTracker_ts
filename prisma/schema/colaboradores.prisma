@@ -1,0 +1,20 @@
+// Entidade: Colaboradores
+// Representa os funcionários/colaboradores da empresa
+
+model colaboradores {
+  colaborador_id           Int                       @id @default(autoincrement())
+  nome_colaborador         String                    @db.VarChar(100)
+  cargo                    String                    @db.VarChar(50)
+  email                    String                    @unique @db.VarChar(100)
+  data_admissao            DateTime?                 @default(now()) @db.Timestamp(6)
+  foto                     Bytes?
+  status                   Boolean?                  @default(true)
+
+  // Relacionamentos
+  colaboradores_atividades atividade_colaboradores[]
+  atividades               atividades[]
+  despesas                 despesas[]
+  lancamentos_de_horas     lancamentos_de_horas[]
+  projeto_colaboradores    projeto_colaboradores[]
+  usuario                  usuarios?
+}
