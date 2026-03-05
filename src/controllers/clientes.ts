@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'generated/prisma/client';
 
 interface PostClienteBody {
   cnpj: string;
@@ -17,7 +16,7 @@ interface PutClienteBody extends Partial<PostClienteBody> {}
 
 export const getClientes = async (req: Request, res: Response): Promise<void> => {
   try {
-    const todosClientes = await prisma.clientes.findMany({
+    const todosClientes = await global.prisma.clientes.findMany({
       orderBy: { cliente_id: 'asc' },
     });
     res.status(200).json(todosClientes);
@@ -38,7 +37,7 @@ export const getClienteByCNPJ = async (
   }
 
   try {
-    const cliente = await prisma.clientes.findUnique({
+    const cliente = await global.prisma.clientes.findUnique({
       where: { cnpj: cnpjLimpo },
       include: {
         projetos: {
@@ -74,7 +73,7 @@ export const postClientes = async (
   const cnpjLimpo = cnpj.replace(/[^\d]/g, '');
 
   try {
-    const novoCliente = await prisma.clientes.create({
+    const novoCliente = await global.prisma.clientes.create({
       data: {
         cnpj: cnpjLimpo,
         nome_cliente,
@@ -110,7 +109,7 @@ export const putClientes = async (
     const cnpjLimpo = cnpj ? cnpj.replace(/\D/g, '') : null;
 
     if (cnpjLimpo) {
-      const duplicado = await prisma.clientes.findFirst({
+      const duplicado = await global.prisma.clientes.findFirst({
         where: {
           cnpj: cnpjLimpo,
           cliente_id: { not: clienteId }
@@ -123,7 +122,7 @@ export const putClientes = async (
       }
     }
 
-    const clienteAtualizado = await prisma.clientes.update({
+    const clienteAtualizado = await global.prisma.clientes.update({
       where: { cliente_id: clienteId },
       data: { cnpj: cnpjLimpo, nome_cliente, nome_contato, cep, endereco, cidade, estado, status }
     });
@@ -150,7 +149,7 @@ export const getClienteById = async (
   }
 
   try {
-    const cliente = await prisma.clientes.findUnique({
+    const cliente = await global.prisma.clientes.findUnique({
       where: { cliente_id: clienteId },
       include: {
         projetos: {
@@ -182,7 +181,7 @@ export const deleteClientes = async (
   }
 
   try {
-    const clienteDeletado = await prisma.clientes.delete({
+    const clienteDeletado = await global.prisma.clientes.delete({
       where: { cliente_id: clienteId },
     });
     res.status(200).json({ message: 'Cliente excluido com sucesso.', cliente: clienteDeletado });
@@ -213,7 +212,7 @@ export const getClienteProjetos = async (
   }
 
   try {
-    const projetosDoCliente = await prisma.projetos.findMany({
+    const projetosDoCliente = await global.prisma.projetos.findMany({
       where: { cliente_id: clienteId },
       orderBy: { projeto_id: 'desc' },
     });

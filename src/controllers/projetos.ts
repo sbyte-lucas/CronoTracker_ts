@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'generated/prisma/client';
 
 interface PostProjetoBody {
   cliente_id: number | string;
@@ -17,7 +16,7 @@ interface PutProjetoBody extends Partial<PostProjetoBody> {}
 
 export const getProjetos = async (req: Request, res: Response): Promise<void> => {
   try {
-    const projetos = await prisma.projetos.findMany({
+    const projetos = await global.prisma.projetos.findMany({
       include: {
         clientes: { select: { cliente_id: true, nome_cliente: true } },
         atividades: { select: { atividade_id: true, nome_atividade: true, status: true } },
@@ -26,7 +25,7 @@ export const getProjetos = async (req: Request, res: Response): Promise<void> =>
       orderBy: { projeto_id: 'desc' }
     });
 
-    const agregacaoHoras = await prisma.lancamentos_de_horas.groupBy({
+    const agregacaoHoras = await global.prisma.lancamentos_de_horas.groupBy({
       by: ['projeto_id'],
       _sum: { duracao_total: true }
     });
@@ -118,7 +117,7 @@ export const postProjetos = async (
       return;
     }
 
-    const novoProjeto = await prisma.projetos.create({
+    const novoProjeto = await global.prisma.projetos.create({
       data: {
         cliente_id: parseInt(String(cliente_id)),
         nome_projeto,
@@ -147,7 +146,7 @@ export const putProjetos = async (
   const { cliente_id, nome_projeto, descricao, data_inicio, data_fim, status, horas_previstas, colaboradores_ids } = req.body;
 
   try {
-    const projetoAtualizado = await prisma.projetos.update({
+    const projetoAtualizado = await global.prisma.projetos.update({
       where: { projeto_id: parseInt(id) },
       data: {
         cliente_id: cliente_id ? parseInt(String(cliente_id)) : undefined,
@@ -178,7 +177,7 @@ export const deleteProjetos = async (
   const { id } = req.params;
 
   try {
-    await prisma.projetos.delete({ where: { projeto_id: parseInt(id) } });
+    await global.prisma.projetos.delete({ where: { projeto_id: parseInt(id) } });
     res.status(204).send();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

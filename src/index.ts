@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import express from "express";
+import express, { Application } from "express";
 import router from './router';
 import { authMiddleware } from './middlewares/auth';
 import cors from 'cors'
@@ -7,12 +7,11 @@ import cors from 'cors'
 //types global
 import './types';
 
-
-const app = express();
 const PORT = process.env.PORT || 3001;
 
-async function main(): Promise<void> {
+async function main() {
   try {
+    const app: Application = express();
     console.log('Iniciando o servidor...');
 
     app.use(cors({
@@ -25,11 +24,11 @@ async function main(): Promise<void> {
     app.use(authMiddleware); // Middleware de autenticação global
 
     app.use(router);
-    
     app.listen(PORT, () => {
       console.log(`Servidor rodando na porta ${PORT}`);
       console.log(`Teste em: http://localhost:${PORT}`);
     });
+
   } catch (error) {
     console.error('Erro ao iniciar o servidor:', error);
     process.exit(1);

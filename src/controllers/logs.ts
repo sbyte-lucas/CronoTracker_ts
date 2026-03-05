@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
 
 interface PostLogBody {
   usuario_id: string | number;
@@ -19,7 +18,7 @@ export const postLog = async (req: Request<{}, {}, PostLogBody>, res: Response):
   }
 
   try {
-    const novoLog = await prisma.logs_acesso.create({
+    const novoLog = await global.prisma.logs_acesso.create({
       data: {
         usuario_id: parsedId,
         evento: evento,

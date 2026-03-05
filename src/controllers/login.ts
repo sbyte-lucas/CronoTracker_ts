@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import prisma from '../prisma';
-import { rootCertificates } from 'tls';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -20,7 +18,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
   }
 
   try {
-    const usuario = await prisma.usuarios.findUnique({ where: { nome_usuario } });
+    const usuario = await global.prisma.usuarios.findUnique({ where: { nome_usuario } });
 
     if (!usuario) {
       res.status(401).json({ error: "Credenciais inválidas." });

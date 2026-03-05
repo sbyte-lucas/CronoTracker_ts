@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'generated/prisma/client';
 
 interface LancamentosQuery {
   usuario_id?: string;
@@ -45,7 +44,7 @@ export const getLancamentos = async (
     let whereClause: Prisma.lancamentos_de_horasWhereInput = {};
 
     if (cargo !== 'gerente' && usuario_id) {
-      const usuario = await prisma.usuarios.findUnique({
+      const usuario = await global.prisma.usuarios.findUnique({
         where: { usuario_id: Number(usuario_id) },
         select: { colaborador_id: true }
       });
@@ -54,7 +53,7 @@ export const getLancamentos = async (
       }
     }
 
-    const lancamentos = await prisma.lancamentos_de_horas.findMany({
+    const lancamentos = await global.prisma.lancamentos_de_horas.findMany({
       where: whereClause,
       include: {
         colaboradores: { select: { nome_colaborador: true } },
@@ -102,7 +101,7 @@ export const postLancamentos = async (
       return;
     }
 
-    const usuarioExistente = await prisma.usuarios.findUnique({
+    const usuarioExistente = await global.prisma.usuarios.findUnique({
       where: { usuario_id: Number(usuario_id) },
       select: { colaborador_id: true }
     });
@@ -125,7 +124,7 @@ export const postLancamentos = async (
     const dataLancamentoBanco = new Date(`${data}T12:00:00Z`);
 
     // Verificação de Sobreposição
-    const sobreposicao = await prisma.lancamentos_de_horas.findFirst({
+    const sobreposicao = await global.prisma.lancamentos_de_horas.findFirst({
       where: {
         colaborador_id: colabId,
         data_lancamento: dataLancamentoBanco,
@@ -157,7 +156,7 @@ export const postLancamentos = async (
       return;
     }
 
-    const novoLancamento = await prisma.lancamentos_de_horas.create({
+    const novoLancamento = await global.prisma.lancamentos_de_horas.create({
       data: {
         colaborador_id: colabId,
         projeto_id: Number(projeto_id),
@@ -229,7 +228,7 @@ export const putLancamentos = async (
     const dataLancamentoDate = new Date(`${dataBase}T12:00:00Z`);
 
     // Obter o colaborador_id do lançamento atual
-    const lancamentoAtual = await prisma.lancamentos_de_horas.findUnique({
+    const lancamentoAtual = await global.prisma.lancamentos_de_horas.findUnique({
       where: { lancamento_id: idLancamento },
       select: { colaborador_id: true }
     });
@@ -239,7 +238,7 @@ export const putLancamentos = async (
       return;
     }
 
-    const conflito = await prisma.lancamentos_de_horas.findFirst({
+    const conflito = await global.prisma.lancamentos_de_horas.findFirst({
       where: {
         lancamento_id: { not: idLancamento },
         colaborador_id: lancamentoAtual.colaborador_id,
@@ -288,7 +287,7 @@ export const putLancamentos = async (
       updateData.clientes = { connect: { cliente_id: idCliente } };
     }
 
-    const lancamentoAtualizado = await prisma.lancamentos_de_horas.update({
+    const lancamentoAtualizado = await global.prisma.lancamentos_de_horas.update({
       where: { lancamento_id: idLancamento },
       data: updateData,
     });
@@ -316,7 +315,7 @@ export const deleteLancamentos = async (
   const { id } = req.params;
 
   try {
-    await prisma.lancamentos_de_horas.delete({
+    await global.prisma.lancamentos_de_horas.delete({
       where: { lancamento_id: Number(id) },
     });
     res.status(204).send();
@@ -338,7 +337,7 @@ export const patchLancamentosStatus = async (
   }
 
   try {
-    const atualizado = await prisma.lancamentos_de_horas.update({
+    const atualizado = await global.prisma.lancamentos_de_horas.update({
       where: { lancamento_id: parseInt(id) },
       data: { status_aprovacao: status }
     });

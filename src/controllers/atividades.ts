@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
-import { Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from 'generated/prisma/internal/prismaNamespace';
 
 interface PostAtividadeBody {
   projeto_id: number | string;
@@ -39,7 +38,7 @@ export const postAtividades = async (
       : null;
     const hPrevistasSolicitadas = Number(horas_previstas) || 0;
 
-    const projeto = await prisma.projetos.findUnique({
+    const projeto = await global.prisma.projetos.findUnique({
       where: { projeto_id: projetoIdNumerico },
       select: { horas_previstas: true }
     });
@@ -49,7 +48,7 @@ export const postAtividades = async (
       return;
     }
 
-    const somaAtividades = await prisma.atividades.aggregate({
+    const somaAtividades = await global.prisma.atividades.aggregate({
       where: { projeto_id: projetoIdNumerico },
       _sum: { horas_previstas: true }
     });
@@ -63,7 +62,7 @@ export const postAtividades = async (
       return;
     }
 
-    const novaAtividade = await prisma.atividades.create({
+    const novaAtividade = await global.prisma.atividades.create({
       data: {
         nome_atividade,
         prioridade: prioridade || "normal",
@@ -85,20 +84,20 @@ export const postAtividades = async (
     });
 
     // RECALCULA AS HORAS DO PROJETO
-    const soma = await prisma.atividades.aggregate({
+    const soma = await global.prisma.atividades.aggregate({
       where: { projeto_id: projetoIdNumerico },
       _sum: { horas_gastas: true }
     });
 
     // ATUALIZA O PROJETO
-    await prisma.projetos.update({
+    await global.prisma.projetos.update({
       where: { projeto_id: projetoIdNumerico },
       data: { horas_gastas: soma._sum.horas_gastas || 0 }
     });
 
     res.status(201).json(novaAtividade);
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2003') {
       res.status(404).json({ error: `O Projeto ID ${projeto_id} não existe.` });
       return;
     }
@@ -122,7 +121,7 @@ export const putAtividades = async (
     const idProj = Number(projeto_id);
     const hPrevistasNovas = Number(horas_previstas) || 0;
 
-    const projeto = await prisma.projetos.findUnique({
+    const projeto = await global.prisma.projetos.findUnique({
       where: { projeto_id: idProj },
       select: { horas_previstas: true }
     });
@@ -132,7 +131,7 @@ export const putAtividades = async (
       return;
     }
 
-    const somaOutrasAtividades = await prisma.atividades.aggregate({
+    const somaOutrasAtividades = await global.prisma.atividades.aggregate({
       where: {
         projeto_id: idProj,
         NOT: { atividade_id: idAtv }
@@ -152,7 +151,7 @@ export const putAtividades = async (
     const dataInicio = data_prevista_inicio ? new Date(data_prevista_inicio + 'T12:00:00Z') : null;
     const dataFim = data_prevista_fim ? new Date(data_prevista_fim + 'T12:00:00Z') : null;
 
-    const atividadeAtualizada = await prisma.atividades.update({
+    const atividadeAtualizada = await global.prisma.atividades.update({
       where: { atividade_id: idAtv },
       data: {
         nome_atividade,
@@ -178,19 +177,19 @@ export const putAtividades = async (
       }
     });
 
-    const soma = await prisma.atividades.aggregate({
+    const soma = await global.prisma.atividades.aggregate({
       where: { projeto_id: idProj },
       _sum: { horas_gastas: true }
     });
 
-    await prisma.projetos.update({
+    await global.prisma.projetos.update({
       where: { projeto_id: idProj },
       data: { horas_gastas: soma._sum.horas_gastas || 0 }
     });
 
     res.status(200).json(atividadeAtualizada);
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
       res.status(404).json({ error: "Atividade não encontrada." });
       return;
     }
@@ -210,13 +209,13 @@ export const deleteAtividades = async (
   }
 
   try {
-    const existe = await prisma.atividades.findUnique({ where: { atividade_id: atividadeId } });
+    const existe = await global.prisma.atividades.findUnique({ where: { atividade_id: atividadeId } });
     if (!existe) {
       res.status(404).json({ error: `Atividade não existe.` });
       return;
     }
 
-    await prisma.atividades.delete({ where: { atividade_id: atividadeId } });
+    await global.prisma.atividades.delete({ where: { atividade_id: atividadeId } });
     res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ error: "Não é possível excluir uma atividade que possui horas lançadas." });
@@ -225,7 +224,7 @@ export const deleteAtividades = async (
 
 export const getAtividades = async (req: Request, res: Response): Promise<void> => {
   try {
-    const atividades = await prisma.atividades.findMany({
+    const atividades = await global.prisma.atividades.findMany({
       include: {
         colaboradores_atividades: {
           include: { colaboradores: true }
@@ -237,7 +236,7 @@ export const getAtividades = async (req: Request, res: Response): Promise<void> 
       orderBy: { atividade_id: 'asc' },
     });
 
-    const somaHorasAtividades = await prisma.lancamentos_de_horas.groupBy({
+    const somaHorasAtividades = await global.prisma.lancamentos_de_horas.groupBy({
       by: ['atividade_id'],
       _sum: { duracao_total: true }
     });
@@ -268,7 +267,7 @@ export const getAtividadeById = async (
   }
 
   try {
-    const atividade = await prisma.atividades.findUnique({
+    const atividade = await global.prisma.atividades.findUnique({
       where: { atividade_id: atividadeId },
       include: {
         colaboradores_atividades: {

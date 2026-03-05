@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
 
 interface PostDespesasBody {
   projeto_id: number | string;
@@ -39,7 +38,7 @@ export const postDespesas = async (
   }
 
   try {
-    const projeto = await prisma.projetos.findUnique({ where: { projeto_id: Number(projeto_id) } });
+    const projeto = await global.prisma.projetos.findUnique({ where: { projeto_id: Number(projeto_id) } });
     if (!projeto) {
       res.status(404).json({ error: "Projeto não encontrado." });
       return;
@@ -49,7 +48,7 @@ export const postDespesas = async (
       return;
     }
 
-    const novaDespesa = await prisma.despesas.create({
+    const novaDespesa = await global.prisma.despesas.create({
       data: {
         projeto_id: Number(projeto_id),
         colaborador_id: Number(colaborador_id),
@@ -80,7 +79,7 @@ export const patchDespesas = async (
   }
 
   try {
-    const despesaAtualizada = await prisma.despesas.update({
+    const despesaAtualizada = await global.prisma.despesas.update({
       where: { despesa_id: parseInt(id) },
       data: {
         status_aprovacao: status,
@@ -100,7 +99,7 @@ export const getDespesas = async (
   const { status } = req.query;
 
   try {
-    const despesas = await prisma.despesas.findMany({
+    const despesas = await global.prisma.despesas.findMany({
       where: status ? { status_aprovacao: status } : {},
       include: {
         colaborador: { select: { nome_colaborador: true } },

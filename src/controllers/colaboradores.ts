@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'generated/prisma/client';
 
 interface PostColaboradorBody {
   nome_colaborador: string;
@@ -15,7 +14,7 @@ interface PutColaboradorBody extends Partial<PostColaboradorBody> {}
 
 export const getColaboradores = async (req: Request, res: Response): Promise<void> => {
   try {
-    const colaboradores = await prisma.colaboradores.findMany({
+    const colaboradores = await global.prisma.colaboradores.findMany({
       include: {
         projeto_colaboradores: {
           include: {
@@ -58,7 +57,7 @@ export const getColaboradorByEmail = async (
   }
 
   try {
-    const colaborador = await prisma.colaboradores.findUnique({
+    const colaborador = await global.prisma.colaboradores.findUnique({
       where: { email: email }
     });
 
@@ -84,7 +83,7 @@ export const postColaboradores = async (
   }
 
   try {
-    const novoColaborador = await prisma.colaboradores.create({
+    const novoColaborador = await global.prisma.colaboradores.create({
       data: {
         nome_colaborador,
         cargo,
@@ -118,7 +117,7 @@ export const getColaboradorById = async (
   }
 
   try {
-    const colaborador = await prisma.colaboradores.findUnique({
+    const colaborador = await global.prisma.colaboradores.findUnique({
       where: { colaborador_id: colaboradorId },
       include: {
         projeto_colaboradores: {
@@ -205,7 +204,7 @@ export const putColaboradores = async (
   if (data_admissao) dadosParaAtualizar.data_admissao = new Date(data_admissao);
 
   try {
-    const colaboradorAtualizado = await prisma.colaboradores.update({
+    const colaboradorAtualizado = await global.prisma.colaboradores.update({
       where: { colaborador_id: id },
       data: dadosParaAtualizar,
     });
@@ -233,7 +232,7 @@ export const deleteColaboradores = async (
   const id = parseInt(req.params.id);
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await global.prisma.$transaction(async (tx) => {
       await tx.colaboradores.update({
         where: { colaborador_id: id },
         data: { status: false }

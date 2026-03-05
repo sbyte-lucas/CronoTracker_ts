@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
 
 interface StatsParams {
   usuario_id: string;
@@ -12,7 +11,7 @@ export const getStats = async (
   const { usuario_id } = req.params;
 
   try {
-    const usuario = await prisma.usuarios.findUnique({
+    const usuario = await global.prisma.usuarios.findUnique({
       where: { usuario_id: parseInt(usuario_id) }
     });
 
@@ -36,7 +35,7 @@ export const getStats = async (
     const seteDiasAtras = new Date(inicioHoje);
     seteDiasAtras.setUTCDate(inicioHoje.getUTCDate() - 6);
 
-    const horasHoje = await prisma.lancamentos_de_horas.aggregate({
+    const horasHoje = await global.prisma.lancamentos_de_horas.aggregate({
       _sum: { duracao_total: true },
       where: {
         colaborador_id: usuario.colaborador_id,
@@ -44,7 +43,7 @@ export const getStats = async (
       }
     });
 
-    const horasOntem = await prisma.lancamentos_de_horas.aggregate({
+    const horasOntem = await global.prisma.lancamentos_de_horas.aggregate({
       _sum: { duracao_total: true },
       where: {
         colaborador_id: usuario.colaborador_id,
@@ -62,7 +61,7 @@ export const getStats = async (
       diferencaPercentual = 100;
     }
 
-    const lancamentosSemana = await prisma.lancamentos_de_horas.groupBy({
+    const lancamentosSemana = await global.prisma.lancamentos_de_horas.groupBy({
       by: ['data_lancamento'],
       _sum: { duracao_total: true },
       where: {
@@ -92,7 +91,7 @@ export const getStats = async (
     // LÓGICA CARD DE DESPESAS
     const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1);
 
-    const despesasMes = await prisma.despesas.aggregate({
+    const despesasMes = await global.prisma.despesas.aggregate({
       _sum: { valor: true },
       where: {
         data_despesa: { gte: inicioMes, lte: fimHoje }

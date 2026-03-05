@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import prisma from '../prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'generated/prisma/client';
 
 interface PostUsuariosBody {
   nome_usuario: string;
@@ -22,7 +21,7 @@ interface PutUsuariosBody {
 
 export const getUsuarios = async (req: Request, res: Response): Promise<void> => {
   try {
-    const usuarios = await prisma.usuarios.findMany({
+    const usuarios = await global.prisma.usuarios.findMany({
       select: {
         usuario_id: true,
         nome_usuario: true,
@@ -50,7 +49,7 @@ export const postUsuarios = async (
     const salt = await bcrypt.genSalt(10);
     const hash_senha = await bcrypt.hash(senha, salt);
 
-    const novoUsuario = await prisma.$transaction(async (tx) => {
+    const novoUsuario = await global.prisma.$transaction(async (tx) => {
       const colaborador = await tx.colaboradores.create({
         data: {
           nome_colaborador: nome_completo,
@@ -108,7 +107,7 @@ export const putUsuarios = async (
       dadosParaAtualizar.hash_senha = await bcrypt.hash(senha, salt);
     }
 
-    const resultado = await prisma.$transaction(async (tx) => {
+    const resultado = await global.prisma.$transaction(async (tx) => {
       const usuarioOriginal = await tx.usuarios.findUnique({
         where: { usuario_id: parseInt(id) }
       });
@@ -152,7 +151,7 @@ export const deleteUsuarios = async (
   const { id } = req.params;
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await global.prisma.$transaction(async (tx) => {
       const usuario = await tx.usuarios.findUnique({
         where: { usuario_id: parseInt(id) }
       });
