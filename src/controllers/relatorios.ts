@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma';
 import ExcelJS from 'exceljs';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'generated/prisma/client';
 
 interface RelatoriosQuery {
   data_inicio?: string;
@@ -22,8 +22,8 @@ interface DespesasQuery {
 }
 
 export const getRelatorios = async (
-  req: Request<{}, {}, {}, RelatoriosQuery>,
-  res: Response
+  req: request,
+  res: response 
 ): Promise<void> => {
   try {
     const { data_inicio, data_fim, colaborador_id, projeto_id, atividade_id, exportar, formato } = req.query;
@@ -38,7 +38,7 @@ export const getRelatorios = async (
     }
 
     if (colaborador_id) {
-      const idNum = parseInt(colaborador_id);
+      const idNum = parseInt(colaborador_id as string);
       if (!isNaN(idNum) && idNum > 0) {
         whereClause.colaborador_id = idNum;
       }
@@ -46,11 +46,11 @@ export const getRelatorios = async (
 
     // Filtro de Projeto
     if (projeto_id && projeto_id !== "") {
-      const idProj = parseInt(projeto_id);
+      const idProj = parseInt(projeto_id as string);
       if (!isNaN(idProj)) whereClause.projeto_id = idProj;
     }
 
-    if (atividade_id) whereClause.atividade_id = parseInt(atividade_id);
+    if (atividade_id) whereClause.atividade_id = parseInt(atividade_id as string);
 
     // Execução da Busca Única
     const dados = await prisma.lancamentos_de_horas.findMany({
