@@ -1,6 +1,3 @@
-// Entidade: Usuários
-// Representa os usuários do sistema (autenticação)
-
 model usuarios {
   usuario_id     Int            @id @default(autoincrement())
   nome_usuario   String         @unique @db.VarChar(50)
@@ -10,8 +7,6 @@ model usuarios {
   cargo          String?        @db.VarChar(20)
   status         Boolean        @default(true)
   colaborador_id Int?           @unique
-
-  // Relacionamentos
   logs_acesso    logs_acesso[]
   colaborador    colaboradores? @relation(fields: [colaborador_id], references: [colaborador_id], onDelete: Cascade)
 

@@ -26,3 +26,5 @@ prisma/migrations/
 
 # Test coverage
 coverage/
+
+/generated/prisma

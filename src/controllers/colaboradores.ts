@@ -34,7 +34,7 @@ export const getColaboradores = async (req: Request, res: Response): Promise<voi
 
       return {
         ...col,
-        foto: col.foto ? col.foto.toString('base64') : null,
+        foto: col.foto ? col.foto.toString() : null,
         listaProjetos: projetosNomes,
         atividadesEquipe: atividadesEquipe
       };
@@ -164,7 +164,7 @@ export const getColaboradorById = async (
 
     const colaboradorFormatado = {
       ...colaborador,
-      foto: colaborador.foto ? colaborador.foto.toString('base64') : null,
+      foto: colaborador.foto ? colaborador.foto.toString() : null,
       total_atividades: totalAtividades,
       total_horas: totalHorasAcumuladas,
       total_despesas_valor: totalDespesas,

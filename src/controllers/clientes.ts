@@ -26,7 +26,7 @@ export const getClientes = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const betClienteByCNPJ = async (
+export const getClienteByCNPJ = async (
   req: Request<{ cnpj: string }>,
   res: Response
 ): Promise<void> => {
@@ -225,7 +225,7 @@ export const getClienteProjetos = async (
 
 export default {
   getClientes,
-  betClienteByCNPJ,
+  getClienteByCNPJ,
   postClientes,
   putClientes,
   getClienteById,

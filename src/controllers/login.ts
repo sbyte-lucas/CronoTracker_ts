@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import prisma from '../prisma';
+import { rootCertificates } from 'tls';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'sua-chave-secreta-muito-segura';
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 interface LoginBody {
   nome_usuario: string;
@@ -46,6 +47,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
     res.json({
       message: "Login bem-sucedido!",
       token,
+      refreshToken: "(implementar refresh token posteriormente)", 
       user: {
         usuario_id: usuario.usuario_id,
         nome_usuario: usuario.nome_usuario,
@@ -54,6 +56,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
         colaborador_id: usuario.colaborador_id,
       }
     });
+    return
   } catch (error) {
     res.status(500).json({ error: "Erro interno." });
   }

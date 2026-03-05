@@ -278,8 +278,8 @@ export const putLancamentos = async (
       projetos: { connect: { projeto_id: idProjeto } },
       atividades: { connect: { atividade_id: idAtividade } },
       data_lancamento: dataLancamentoDate,
-      hora_inicio: inicioDate,
-      hora_fim: fimDate,
+      hora_inicio: inicioDate || undefined,
+      hora_fim: fimDate || undefined,
       duracao_total: duracaoHoras,
       descricao: descricaoFinal,
     };

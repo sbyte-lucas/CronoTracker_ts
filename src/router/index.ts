@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 
 // Controllers
 import * as relatoriosController from '../controllers/relatorios';
@@ -17,7 +17,7 @@ const router = Router();
 
 // Clientes
 router.get("/clientes", clientesController.getClientes);
-router.get("/clientes/cnpj/:cnpj", clientesController.betClienteByCNPJ);
+router.get("/clientes/cnpj/:cnpj", clientesController.getClienteByCNPJ);
 router.post("/clientes", clientesController.postClientes);
 router.put("/clientes/:id", clientesController.putClientes);
 router.get("/clientes/:id", clientesController.getClienteById);
@@ -75,10 +75,5 @@ router.post("/logs", logController.postLog);
 
 // Login
 router.post("/login", loginController.login);
-
-// Rota de teste
-router.get('/', (req: Request, res: Response) => {
-  res.send('Servidor ChronoTracker Backend (TypeScript) rodando com Prisma e Neon!');
-});
 
 export default router;

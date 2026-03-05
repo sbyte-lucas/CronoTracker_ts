@@ -1,6 +1,3 @@
-// Entidade: Colaboradores
-// Representa os funcionários/colaboradores da empresa
-
 model colaboradores {
   colaborador_id           Int                       @id @default(autoincrement())
   nome_colaborador         String                    @db.VarChar(100)
@@ -9,8 +6,6 @@ model colaboradores {
   data_admissao            DateTime?                 @default(now()) @db.Timestamp(6)
   foto                     Bytes?
   status                   Boolean?                  @default(true)
-
-  // Relacionamentos
   colaboradores_atividades atividade_colaboradores[]
   atividades               atividades[]
   despesas                 despesas[]

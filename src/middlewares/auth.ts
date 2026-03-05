@@ -1,37 +1,45 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { JwtPayload, AuthenticatedRequest } from '../types';
+import { NextFunction } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'chronotracker-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET as string;
+const pathsToIgnore = [
+  '/login', 
+  '/refresh-token'
+];
 
 /**
  * Middleware de autenticação JWT
  * Verifica o token no header Authorization e adiciona o usuário ao request
  */
 export const authMiddleware = (
-  req: AuthenticatedRequest,
-  res: Response,
+  req: request,
+  res: response,
   next: NextFunction
 ): void => {
   try {
-    const authHeader = req.headers.authorization;
+    console.log(`Path: ${req.path}, method: ${req.method}`);
+    if (pathsToIgnore.includes(req.path)) {
+      next();
+      return 
+    }
 
-    if (!authHeader) {
+    const token = req.headers.authorization;
+
+    if (!token) {
       res.status(401).json({ error: 'Token não fornecido' });
       return;
     }
 
-    const [scheme, token] = authHeader.split(' ');
-
-    if (scheme !== 'Bearer' || !token) {
-      res.status(401).json({ error: 'Token mal formatado' });
-      return;
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    if (!decoded || !decoded.usuarioId) {
+      res.status(401).json({ error: 'Token inválido' });
+      return
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    // Adiciona os dados do usuário decodificados ao request
     req.user = decoded;
-
     next();
+    return 
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       res.status(401).json({ error: 'Token expirado' });
@@ -42,26 +50,8 @@ export const authMiddleware = (
       return;
     }
     res.status(500).json({ error: 'Erro na autenticação' });
+    return;
   }
-};
-
-/**
- * Middleware para verificar se o usuário tem um cargo específico
- */
-export const requireRole = (...roles: string[]) => {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
-    if (!req.user) {
-      res.status(401).json({ error: 'Usuário não autenticado' });
-      return;
-    }
-
-    if (!roles.includes(req.user.cargo)) {
-      res.status(403).json({ error: 'Acesso negado. Permissão insuficiente.' });
-      return;
-    }
-
-    next();
-  };
 };
 
 export default authMiddleware;
