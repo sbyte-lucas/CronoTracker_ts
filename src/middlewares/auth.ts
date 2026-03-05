@@ -11,17 +11,10 @@ const pathsToIgnore = [
  * Middleware de autenticação JWT
  * Verifica o token no header Authorization e adiciona o usuário ao request
  */
-export const authMiddleware = (
-  req: request,
-  res: response,
-  next: NextFunction
-): void => {
+export const authMiddleware = (req: request, res: response, next: NextFunction): void => {
   try {
     console.log(`Path: ${req.path}, method: ${req.method}`);
-    if (pathsToIgnore.includes(req.path)) {
-      next();
-      return 
-    }
+    if (pathsToIgnore.includes(req.path)) return next();
 
     const token = req.headers.authorization;
 
@@ -39,7 +32,6 @@ export const authMiddleware = (
     // Adiciona os dados do usuário decodificados ao request
     req.user = decoded;
     next();
-    return 
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       res.status(401).json({ error: 'Token expirado' });
