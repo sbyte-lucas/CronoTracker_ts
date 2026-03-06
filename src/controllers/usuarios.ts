@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { Prisma } from 'generated/prisma/client';
+import { Prisma } from '@/generated/prisma/client';
 
 interface PostUsuariosBody {
   nome_usuario: string;

@@ -76,4 +76,9 @@ router.post("/logs", logController.postLog);
 // Login
 router.post("/login", loginController.login);
 
-export default router;
+router.stack.map(item => {
+  if(item?.route?.path) item.route.path = '/api' + item.route.path;
+  return item;
+});
+
+export default router  

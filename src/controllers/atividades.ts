@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClientKnownRequestError } from 'generated/prisma/internal/prismaNamespace';
+import { PrismaClientKnownRequestError } from '@/generated/prisma/internal/prismaNamespace';
 
 interface PostAtividadeBody {
   projeto_id: number | string;
