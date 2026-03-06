@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import ExcelJS from 'exceljs';
-import { Prisma } from 'generated/prisma/client';
+import { Prisma } from '@/generated/prisma/client';
+// import { Prisma } from './generated/prisma/client';
 
 interface RelatoriosQuery {
   data_inicio?: string;
